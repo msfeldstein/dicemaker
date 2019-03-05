@@ -16,25 +16,51 @@ function regenerate() {
 
   const shape = Polyhedra.platonic[options.shape]
   const geometry = new THREE.BufferGeometry()
-  console.log(shape)
-  const vertices = shape.vertex.flat()
+  const shapeVerts = shape.vertex.flat()
   // convert quads to tris
-  const indices = shape.face.map(f => {
+  const shapeIdx = shape.face.map(f => {
     const tris = []
     for (var i = 0; i < f.length - 2; i++) {
       tris.push(f[0], f[i + 1], f[i + 2])
     }
     return tris
   }).flat()
-  geometry.setIndex(indices)
-  geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
-  geometry.computeFaceNormals()
+  const vertices = []
+  const indices = []
+  for (var i = 0; i < shapeIdx.length; i++) {
+    vertices.push(shape.vertex[shapeIdx[i]])
+    indices.push(i)
+  }
+  const attr = new THREE.Float32BufferAttribute(vertices.flat(), 3)
+  geometry.addAttribute('position', attr)
   geometry.computeVertexNormals()
   const mesh = new THREE.Mesh(
     geometry,
     new THREE.MeshStandardMaterial()
   )
   container.add(mesh)
+
+  const sphereGeo = new THREE.SphereBufferGeometry(0.1)
+  const sphereMat = new THREE.MeshStandardMaterial()
+
+  // Find the center of each face
+  shape.face.forEach(faceIndices => {
+    const center = [0, 0, 0]
+    faceIndices.forEach(i => {
+      const p = shape.vertex[i]
+      center[0] += p[0]
+      center[1] += p[1]
+      center[2] += p[2]
+    })
+    center[0] /= faceIndices.length
+    center[1] /= faceIndices.length
+    center[2] /= faceIndices.length
+    const sphere = new THREE.Mesh(
+      sphereGeo, sphereMat
+    )
+    sphere.position.set(...center)
+    container.add(sphere)
+  })
 }
 
 controls.addPanel()

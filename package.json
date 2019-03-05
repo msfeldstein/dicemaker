@@ -8,7 +8,8 @@
     "esmify": "^2.1.1",
     "platonic": "^1.0.0",
     "polyhedra": "^1.0.0",
-    "three": "^0.102.1"
+    "three": "^0.102.1",
+    "three-matcap-material": "^1.0.0"
   },
   "devDependencies": {
     "budo": "^11.6.1"

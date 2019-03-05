@@ -2,6 +2,7 @@ const THREE = require('three')
 
 const renderer = new THREE.WebGLRenderer({ antialias: true })
 renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.setClearColor(0xc0c0c0)
 document.body.appendChild(renderer.domElement)
 document.body.style.margin = 0
 const scene = new THREE.Scene()
